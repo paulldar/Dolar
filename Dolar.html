@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Poldar Exchange - Calculator</title>
+    <style>
+        :root { --gold: #c5a059; --blue-accent: #2c3e50; --bg: #121212; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: #e0e0e0; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .wrapper { width: 100%; max-width: 420px; background: #1e1e1e; border-radius: 25px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); border: 1px solid #333; margin-top: 20px; }
+        h1 { color: var(--gold); text-align: center; font-size: 1.6rem; margin-bottom: 5px; }
+        .sub { text-align: center; color: #888; font-size: 0.85rem; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 15px; }
+        .input-box { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 10px; font-weight: 500; font-size: 0.95rem; }
+        input { width: 100%; background: #2a2a2a; border: 2px solid #444; border-radius: 12px; padding: 18px; color: #fff; font-size: 1.5rem; box-sizing: border-box; outline: none; transition: 0.3s; -webkit-appearance: none; }
+        input:focus { border-color: var(--gold); background: #333; }
+        .b-border { border-right: 10px solid #3498db; }
+        .w-border { border-right: 10px solid #bdc3c7; }
+        .total-card { background: linear-gradient(135deg, #c5a059, #8e6d2f); border-radius: 15px; padding: 20px; text-align: center; margin-top: 10px; color: #000; }
+        .total-card small { font-size: 0.85rem; font-weight: bold; opacity: 0.8; }
+        .total-card span { display: block; font-size: 2.2rem; font-weight: 800; }
+        .auto-exp { margin-top: 30px; background: #252525; padding: 20px; border-radius: 15px; font-size: 0.9rem; line-height: 1.7; border-left: 5px solid var(--gold); }
+        .val-hl { color: var(--gold); font-weight: bold; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <h1>حاسبة توزيع المبالغ</h1>
+    <p class="sub">نظام Poldar للصيرفة (70% أزرق / 30% أبيض)</p>
+
+    <div class="input-box">
+        <label>💵 دولار أزرق (70%):</label>
+        <input type="number" id="blue" class="b-border" placeholder="0" oninput="calculate('b')">
+    </div>
+
+    <div class="input-box">
+        <label>⚪ دولار أبيض (30%):</label>
+        <input type="number" id="white" class="w-border" placeholder="0" oninput="calculate('w')">
+    </div>
+
+    <div class="total-card">
+        <small>المبلغ الإجمالي</small>
+        <span id="total">0.00 $</span>
+    </div>
+
+    <div id="status" class="auto-exp">
+        <b>الشرح التلقائي:</b><br>
+        أدخل المبالغ أعلاه لمشاهدة تحليل الحصص الفوري.
+    </div>
+</div>
+
+<script>
+    function calculate(source) {
+        const bField = document.getElementById('blue');
+        const wField = document.getElementById('white');
+        const tField = document.getElementById('total');
+        const sField = document.getElementById('status');
+
+        let b = parseFloat(bField.value);
+        let w = parseFloat(wField.value);
+
+        if (source === 'b' && b > 0) {
+            w = (b / 70) * 30;
+            wField.value = w.toFixed(2);
+        } else if (source === 'w' && w > 0) {
+            b = (w / 30) * 70;
+            bField.value = b.toFixed(2);
+        }
+
+        const total = (parseFloat(bField.value) || 0) + (parseFloat(wField.value) || 0);
+        tField.innerText = total.toLocaleString(undefined, {minimumFractionDigits: 2}) + " $";
+
+        if (total > 0) {
+            sField.innerHTML = `<b>تحليل العملية:</b><br>` +
+                `لتجهيز مبلغ كلي قدره <span class="val-hl">${total.toLocaleString()} $</span>:<br>` +
+                `يجب دفع <span class="val-hl">${bField.value} $</span> أزرق (حصة الـ 70%)<br>` +
+                `ويجب دفع <span class="val-hl">${wField.value} $</span> أبيض (حصة الـ 30%)`;
+        }
+    }
+</script>
+
+</body>
+</html>
